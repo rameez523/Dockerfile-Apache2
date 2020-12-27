@@ -1,0 +1,2 @@
+# Dockerfile-Apache2
+Create docker file of apache webserver  vim Dockerfile  FROM ubuntu RUN apt-get update RUN apt-get install -y apache2 RUN apt-get install -y apache2-utils EXPOSE 80 ENTRYPOINT ["apache2ctl"] CMD ["-DFOREGROUND"]  docker build -t webserver:latest .  docker images  docker run -itd -p 80:80 webserver:latest  docker ps  docker inspect (container name) | grep IP  copy IP and run on browser Also run localhost on browser  Thats it... Thanks 👍
