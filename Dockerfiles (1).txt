@@ -1,0 +1,53 @@
+
+mkdir /home/devops/apache2
+
+cd /home/devops/apache2
+
+echo Welcome to mywebserver > index.html
+
+FROM ubuntu:18.04                                                              
+MAINTAINER Hazza <hazza@gmail.com>
+ENV PORT 8080
+
+RUN apt update  && \
+apt install apache2 -y && \
+apt clean all 
+
+VOLUME [ "/var/www/html" ]
+WORKDIR /var/www/html
+
+ADD index.html /var/www/html/
+
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
+RUN sed -ri -e '/^Listen 80/c\Listen ${PORT}' /etc/apache2/ports.conf
+EXPOSE ${PORT}
+ENTRYPOINT [ "/usr/sbin/apachectl" ]
+
+docker build -t apache2-ubunutu18-custom
+
+docker images
+
+docker run --name apache-custom -d -p 20080:8080 apache2-ubunutu18-custom
+
+docker ps -a
+
+docker logs apache2-ubunutu18-custom
+
+docker inspect -f '{{.NetworkSettings.IPAddress}}' apache-custom
+
+curl http://172.17.0.2:8080
+
+curl http://127.0.0.1:20080
+
+
+
+ I have not failed, I've just found 10,000 ways that won't work. 
+ (Thomas Edison)
+
+
